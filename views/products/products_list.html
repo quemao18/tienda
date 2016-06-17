@@ -1,0 +1,88 @@
+  <style>
+.app-modal-window .modal-dialog {
+  width: 600px;
+}
+.pointer {
+    cursor: zoom-in;
+}
+</style>
+  
+
+<!-- list details --> 
+        <div class="form-inline ">          
+        
+		    <div class="form-group">
+		     <input focus="false"  id='filterList' ng-model="filterList" type="text" class="form-control form-control-sm" placeholder="Filtrar..." selectOnClick/>			    
+			<input ng-init="exist=isLocal"  ng-checked="exist" type="checkbox" ng-model= "exist"> Disponibles 
+			<!-- 
+			<select ng-change="subgrupo"  name="singleSelect" id="singleSelect" ng-model="subgrupo">	
+		     <option value="">Marca</option>
+		      <option ng-repeat= "product in filtered = (products | toArray:false | filter:isExist(exist)  ) | unique:'subgrupo'" value="{{(subgrupo)}}">{{ ((product.subgrupo)) }}</option> 	      
+    		</select> -->
+    	
+			</div>
+		</div>
+<hr/>
+<div infinite-scroll="loadMore()">		
+<div ng-repeat="product  in filtered = (products | toArray:false | filter:isExist(exist) | filter:isSubGrupo(subgrupo) | filter:filterList | orderBy : predicate :reverse ) | limitTo:entryLimit " >  
+    <div class="row" >
+        <div class="col-sm-2 col-xs-4 col-md-2">          
+   
+       	<img class="pointer" ng-click="openImage(product)" height="110" width="110" title="{{product.codigo}}" alt="{{product.codigo}}" 
+         	ng-src="{{product.foto_articulo !='' ? (product.foto_articulo | replaceString:'z:\\premium\\administrativo8x\\fotos\\': 'img/fotos/' ) : (product.foto_grupo | replaceString:'z:\\premium\\administrativo8x\\fotos\\': 'img/fotos/' )}}">         		       		
+              
+        </div>
+        <div class="col-sm-6 col-xs-12 col-md-6">            
+	            <h3 > {{product.nombre | ucwords}}
+	            <small ng-show="(product.medidas)!=''"> ({{product.medidas}}) </small>
+	            </h3>			
+			<h4>
+				   
+				{{product.codigo}}
+				   <a title="Ordenar por codigo" ng-click="sort_by('codigo');"> <i class="glyphicon glyphicon-sort"></i></a>
+				<small ng-show="(product.referencia)!=''" > Ref: {{product.referencia}} </small>
+				 <a ng-show="(product.referencia)!=''"  title="Ordenar por referencia" ng-click="sort_by('referencia');"> <i class="glyphicon glyphicon-sort"></i></a>
+				<strong ng-show="(product.marca)!=''">{{product.marca}}</strong>
+			</h4>			
+						
+			<p ng-show="(product.detalles)!=''"><i ng-bind-html= "product.detalles | ucwords | highlight:topic" ></i></p>						
+			<h4>
+			<strong ng-class="product.existencia>0 ? 'text-success' : 'text-danger'" ng-show="isLocal || isAdmin">Existencia: {{product.existencia | number : 0}}</strong>				
+			<small ng-show="(product.ubicacion)!='' && isLocal">Ubicacion: {{product.ubicacion}} </small>
+			</h4>   		 
+	    		<div class="form-inline ">          
+		    		<div class="form-group">
+		   				 
+		   				<ngcart-addtocart id="{{ product.codigo }}" name="{{ product.nombre }}" price="{{ product.precio1 | roundPrice }}" quantity="1" quantity-max="10" data="product">		   				 
+		   				Agregar
+		   				</ngcart-addtocart>		   
+		   			   				  		    			
+		   			</div>
+		   	   		<button ng-show="isAdmin && isLocal" class="btn btn-primary btn-sm" type="button" ng-click="openProduct(product)">Editar</button>				 
+		   			
+		   	   </div>		
+  			
+		   		 
+	    </div>
+	
+	
+	     <div class="col-sm-4 col-xs-4 col-md-4 right">     
+	     	     
+    		<h3 ng-show="isLocal || isAdmin"  ng-class="product.meses_modificacion <= 1 ? 'text-success' : 'text-warning'">{{product.precio1 | roundPrice | currency:'Bs. '}}
+    		<span  title="{{{true: 'Actualizado recientemente.', false: 'Modificado hace ' + product.meses_modificacion +' meses'}[product.meses_modificacion <= 1]}}" 
+    		ng-class="product.meses_modificacion <= 1 ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-warning-sign'"></span></h3>		
+    		<h3><strong ng-show="!isAdmin && !isLocal">
+					<span ng-show="product.existencia>0"  class="text-success">Disponible</span>
+					<span ng-show="product.existencia<=0" class="text-danger">Agotado</span>					
+				</strong>
+			<span ng-show="!isAdmin && !isLocal" title="Agregalo y solicita tu presupuesto para confirmar existencia." class="glyphicon glyphicon-warning-sign"></span>	 
+			</h3>
+    		<br>    		
+    		 	              	   
+         </div>
+         
+       
+   </div>  		      	 			 				 
+       		 <hr>     
+</div>        	
+</div>

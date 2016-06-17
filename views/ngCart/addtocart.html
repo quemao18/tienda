@@ -1,0 +1,21 @@
+<div ng-hide="attrs.id" >
+    <a class="btn btn-lg btn-primary" ng-disabled="true" ng-transclude></a>
+
+</div>
+<div class="form-inline " >
+<div ng-show="attrs.id" class="form-group">
+    <div class="form-group">
+        <span ng-show="quantityMax">
+            <select  ng-disabled="inCart()" name="quantity" id="quantity" ng-model="q"
+                    ng-options=" v for v in qtyOpt"></select>
+        </span>
+        <a ng-show="!inCart()" class="btn btn-sm btn-primary"
+           ng-click="ngCart.addItem(id, name, price, q, data)"
+           ng-transclude></a>
+   
+    <mark  ng-show="inCart()">
+       <a  class="btn btn-sm btn-primary" ng-click="ngCart.removeItemById(id)" style="cursor: pointer;">Quitar</a>
+    </mark> 
+    </div>
+</div>
+</div>

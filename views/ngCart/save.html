@@ -1,0 +1,83 @@
+<div class="modal-header">
+<flash-message duration="5000" show-close="true" on-dismiss="myCallback(flash)" ></flash-message>
+            <h3 class="modal-title">Registrar/Buscar Cliente </h3>
+        </div>
+        <div class="modal-body">
+<form  name="registerPremiumForm"  ng-submit="registerPremium(user)" novalidate>
+
+            <div class="form-group">
+            <div class="form-group">
+                     <label class="" for="exampleInputUser">CI/RIF:</label>
+                     <span style="color:red" ng-show="error">CI/RIF incorrecto!</span>
+
+                    <angucomplete-alt 
+                    id="codigo"
+                    name="codigo"
+                    placeholder="CI/RIF o nombre cliente"
+                    pause="1000"
+                    selected-object="user"
+                    text-no-results = ""
+                    remote-url="{{Variables.ApiUrl}}/users/client_premium?user="			 
+                    remote-url-data-field="results"
+                    search-fields="nombre,codigo"
+                    title-field="codigo"
+                    description-field="nombre"     
+                    focus-out="focusOut(user)" 
+                    minlength="3"        
+
+                    input-class="form-control form-control-small" 
+                    match-class="highlight"
+                    auto-match="true"
+
+                                />
+
+                                  </div>
+                                          <div class="form-group">
+                                           <label class="" for="exampleInputName">Nombre: </label>
+                                           <input ng-model="user.originalObject.nombre" type="text" class="form-control" id="name" name="name"   required capitalize>
+                                          </div>
+
+                                          <div class="form-group">
+                                           <label class="" for="exampleInputPhone">Tel&eacute;fono (opcional): </label>
+                                           <input ng-model="user.originalObject.telefonos" type="text" class="form-control" id="phone" name="phone"  >
+                                          </div>
+                                          <div class="form-group">
+                                           <label class="" for="exampleInputDirection">Direcci&oacute;n:</label>
+                                           <textarea ng-model="user.originalObject.direccion" type="text" class="form-control" id="direction" name="direction"  required capitalize></textarea>
+                                          </div>
+                                          <div class="form-group">
+                                           <label class="" for="exampleInputPhone">Tipo: </label>
+                                           <select ng-model="user.originalObject.tipo" ng-options="tipo.codigo as tipo.nombre for tipo in tipoRes">
+                                          <option value="">Seleccione</option>
+                                          </select>
+<!-- otra manera de select 
+			<select>
+            <option value = "0" label = "Please Select"></option>
+            <option ng-repeat="fruit in tipoRes" value="{{fruit.codigo}}"
+                        ng-selected="fruit.codigo == user.originalObject.tipo">
+                {{fruit.nombre}} 
+            </option> 
+        </select>
+-->
+                    <label class="" for="exampleInputPhone">Zona: </label>
+                   <select ng-model="user.originalObject.zona" ng-options="zona.codigo as zona.nombre for zona in zoneRes">
+                   <option value="">Seleccione</option>
+                   </select>
+
+                   </div>
+																		
+                </div>
+				
+           		 <div class="form-group">
+
+                	<div class="">
+                            <button class="btn btn-primary" type="button" ng-click="registerPremium(user)" ng-disabled="(!registerPremiumForm.$valid) || (registerPremiumForm.username.$error.pattern) || !user.originalObject.zona || !user.originalObject.tipo || error"><span class="glyphicon glyphicon-save"></span> Guardar</button>
+                            <button class="btn btn-primary" type="button" ng-click="closeModal()" > <span class="glyphicon glyphicon-remove"></span> Cerrar </button>                 
+ 					
+               		 </div>
+                
+            	</div>     
+			
+           
+        </form>
+        </div>

@@ -1,0 +1,9 @@
+<div class="list-group" ng-init="(topic == null ? searchFnc('', '') : searchFnc(group.codigo_grupo, topic))">
+<!-- ng-init="(topic == null ? cataloge() : searchFnc(group.codigo_grupo, topic))" -->
+<h4 class="list-group-item-heading">  
+	<a ng-click="loadGroup(group.codigo_grupo, topic) "  ng-repeat="group in products | orderBy:  'nombre_grupo'" href="#" class="list-group-item">	  
+	  <img class="img-rounded" alt="" width="80" height="75" ng-src="{{ (group.foto_grupo | replaceString:'z:\\premium\\administrativo8x\\fotos\\': 'img/fotos/' )}}">
+	 &emsp;{{group.nombre_grupo | ucwords}} 	 
+  	</a> 
+</h4>
+</div>

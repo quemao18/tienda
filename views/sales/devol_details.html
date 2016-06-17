@@ -1,0 +1,48 @@
+      <div class="modal-header">
+            <h3 class="modal-title">Devolucion #{{id_devolucion}} </h3>
+        </div>
+        <div class="modal-body">
+            <table class="table table-striped">
+                      <thead>                    
+                        <tr><th align="left" style="width:40%">Art&iacute;culo</th><th style="text-align:center">Precio venta</th><th style="text-align:center">Cantidad Devuelta</th><th style="text-align:center">Total Devuelto</th></tr>
+                      </thead>
+                      
+                      <tbody>
+                      
+                       	
+    					<tr ng-repeat = "art in devolucion_detail">				
+									
+                        <td>
+						
+						<h5> {{art.nombre | ucwords}} 
+	            		<small ng-show="(art.medidas)!=''"> ({{art.medidas}}) </small>
+	        			</h5>
+						
+						<h5>
+						{{art.codigo_articulo}}
+						<small ng-show="(art.referencia)!=''" > Ref: {{art.referencia}} </small>
+						</h5>	
+ 						<h5>
+						<small ng-show="(art.detalles)!=''" ><i> {{art.detalles | ucwords}}</i></small>
+						</h5>
+
+						</td><td style="text-align:center">{{art.precio_venta | currency: 'Bs. ':2}}</td>
+						<td style="text-align:center">
+							{{art.cantidad}}
+						</td>
+                        <td style="text-align:center">{{art.precio_venta*art.cantidad | currency: 'Bs. ':2}}</td>
+                </tr>
+					
+       				
+					<td></td>
+					<td></td>
+					<td style="text-align:center"><b>Total: </b></td>
+					<td style="text-align:center">{{ total | currency: 'Bs. ':2 }}</td>
+                    
+                      </tbody>
+               	</table>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="cancel()">Cerrar</button>
+           <!-- <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button> -->
+        </div>

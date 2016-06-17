@@ -1,0 +1,27 @@
+<div class="container">
+<form class = "form-horizontal" name="forgetForm" ng-controller="forgetCtrl"   ng-submit="forget(user)" novalidate>
+     
+      <div class="form-group">
+              <div class="form-group">
+							 <label class="" for="exampleInputEmail2">CI/RIF &oacute; Email:</label>
+							 <input ng-model="user.username" type="text" class="form-control" id="username" name="username" placeholder="CI/RIF &oacute; Email"  required>
+				</div>
+					
+		</div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-8">
+                    <button type ='submit' class ='btn btn-primary' ng-disabled = '!forgetForm.$valid' id='forget' ><span class="glyphicon glyphicon-lock"></span> Enviar </button>                                                    
+                </div>
+                
+            </div>  
+            <!--                     
+             <div ng-show="flash">
+                <div role = "alert" class="alert alert-{{class}}" >{{ flash }}</div>
+            </div>
+             -->
+        </form>
+</div>
+
+
+
+	

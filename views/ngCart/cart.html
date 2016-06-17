@@ -1,0 +1,126 @@
+<div class="alert alert-warning" role="alert" ng-show="ngCart.getTotalUniqueItems() === 0">
+    Nada en el pedido
+</div>
+
+<div class="table-responsive col-lg-12" ng-show="ngCart.getTotalUniqueItems() > 0">
+
+    <table class="table table-striped ngCart cart">
+
+        <thead>
+        <tr>
+            <th></th>
+            <th>Producto</th>
+            <th>Cant.</th>
+            <th  ng-show="isLocal"  width="150" class="text-right">Precio</th>
+            <th  ng-show="isLocal"  width="200" class="text-right">Total</th>
+        </tr>
+        </thead>
+        <tfoot>
+        <tr ng-show="ngCart.getTax()">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>Imp ({{ ngCart.getTaxRate() }}%):</td>
+            <td>{{ ngCart.getTax() | currency: 'Bs.' }}</td>
+        </tr>
+        <tr ng-show="ngCart.getShipping()">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>Shipping:</td>
+            <td>{{ ngCart.getShipping() | currency: 'Bs.' }}</td>
+        </tr>
+        <tr style="font-weight: bold;"   >
+            <td></td>
+            <td>       	
+            	<div ng-show="ngCart.getTotalItems()>0">{{ngCart.getTotalItems()}} <ng-pluralize  count="ngCart.getTotalItems()" when="{1: 'producto', 'other':'productos'}"></ng-pluralize></div><br>
+     		</td>
+            <td></td>
+            <td ng-show="isLocal" class="text-right">Total:</td>
+            <td ng-show="isLocal" class="text-right">{{ ngCart.totalCost() | currency: 'Bs.' }}</td>
+        </tr>
+        </tfoot>
+        <tbody>
+        <tr ng-repeat="item in ngCart.getCart().items track by $index">
+        
+            <td><h4><span ng-click="ngCart.removeItemById(item.getId())" class="glyphicon glyphicon-remove"></span></h4></td>
+
+            <td width="60%">
+            <h4 > {{item.getName() | ucwords}}
+	            <small ng-show="(item.getData().medidas)!=''"> ({{item.getData().medidas}}) </small>
+	        </h4>	
+            <h4>
+				Cod: {{item.getData().codigo}}
+				<small ng-show="(item.getData().referencia)!=''" > Ref: {{item.getData().referencia}} </small>{{item.getData().marca}}
+			</h4>	
+ 			<h4>
+				<small ng-show="(item.getData().detalles)!=''" ><i> {{item.getData().detalles | ucwords}}</i></small>
+			</h4>	
+            
+            </td>
+            <td >
+                       
+            	<span ng-model="exist" class="glyphicon glyphicon-minus" ng-class="{'disabled':item.getQuantity()<=0 }"
+                      ng-click="item.setQuantity(-1, true)"></span>
+                {{ item.getQuantity() | number }}&nbsp;&nbsp;
+                <span class="glyphicon glyphicon-plus" ng-class="{'disabled':item.getQuantity()>=100}"
+                ng-click="item.getQuantity() <= 100 ? item.setQuantity(1, true): '' "></span>
+                <h5  ng-show="isLocal || isAdmin"  title="Disponible en inventario" ng-class="item.getData().existencia>0 ? 'text-success' : 'text-danger'">{{ajust_exist ? item.getQuantity() : item.getData().existencia | number : 0}}</h5>	    		 
+	   		
+            </td>
+            
+            <td width="13%"  ng-show="isLocal"  class="text-right">
+            
+            		
+            		<div class="row">
+					    <div class="input-group">
+					       <input 		
+					      				class="form-control"
+					      				onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+					       	    		onClick="this.setSelectionRange(0, this.value.length)"
+					            		ng-model="price" 
+					            		ng-change="item.setPrice(price)" 					            		
+					            		size="20" 					            		
+					            		ng-value="{{ item.getPrice() }}">
+					            	
+					      <span class="input-group-btn">
+					       <ngcart-checkout ng-click="ajust_price" service="price" settings="{ url:Variables.ApiUrl + '/cart/price', price:price, item_id:item.getId()}"></ngcart-checkout>
+					     
+					      </span>
+					    </div>
+					  </div>
+					
+				         	
+           	<h5 ng-model="ajust_price" ng-class="item.getData().meses_modificacion <= 1 ? 'text-success' : 'text-warning'">{{ajust_price ? price : item.getData().precio1 | roundPrice | currency:'Bs. '}}
+    		<span title="{{{true: 'Actualizado recientemente.', false: 'Modificado hace ' + item.getData().meses_modificacion +' meses'}[item.getData().meses_modificacion <= 1]}}" 
+    		ng-class="item.getData().meses_modificacion <= 1 ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-warning-sign'"></span></h5>
+           		
+  					
+            </td>
+            
+            
+            <td width="15%" ng-show="isLocal"  class="text-right">{{ item.getTotal() | currency : 'Bs. ' }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<hr>
+
+<ngcart-checkout  ng-show="isLocal"  service="sale" settings="{ url:Variables.ApiUrl + '/cart/sale' }"></ngcart-checkout>
+<ngcart-checkout  ng-show="isLocal"  service="save" settings="{ url:Variables.ApiUrl + '/cart/save' }"></ngcart-checkout>
+<!-- 
+<button ng-show="isLocal" class="btn btn-primary btn" type="button" ng-click="openRegister(product)">Cliente</button>				 
+	 -->	   		
+<ngcart-checkout  ng-show="!isLocal" service="inquire" settings="{ url:Variables.ApiUrl + '/cart/inquire' }"></ngcart-checkout>
+<ngcart-checkout  ng-show="isLocal"  ng-click="ajust_exist" service="exist" settings="{ url:Variables.ApiUrl + '/cart/exist', isAdmin:isAdmin }"></ngcart-checkout>
+<hr>
+
+<style>
+    .ngCart.cart span[ng-click] {
+        cursor: pointer;
+    }
+    .ngCart.cart .glyphicon.disabled {
+        color:#aaa;
+    }
+</style>

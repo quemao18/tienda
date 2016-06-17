@@ -1,0 +1,66 @@
+<form name="sale">
+        <div class="modal-header">
+  <flash-message duration="5000" show-close="true" on-dismiss="myCallback(flash)" ></flash-message>
+            <h3 class="modal-title">Venta #{{id_venta}} </h3>
+        </div>
+        <div class="modal-body">
+            <table class="table table-striped">
+                      <thead>                  
+                        <tr><th align="left" style="width:40%">Art&iacute;culo</th>
+					<th align="left" >Precio venta</th><th style="text-align:center" >Cantidad</th>
+					<!-- <th style="text-align:center" ng-show="false">Devolver</th> -->
+					<th style="text-align:center" >Devuelto</th>
+					<th style="text-align:center" >Monto a devolver</th>
+						</tr>
+                      </thead>
+                     
+                      <tbody>
+                      
+                        <tr ng-repeat = "art in venta_dev.venta">			
+						
+                        <td align="left" >
+						<h5> {{art.nombre | ucwords}} 
+	            		<small ng-show="(art.medidas)!=''"> ({{art.medidas}}) </small>
+	        			</h5>
+						
+						<h5>
+						{{art.codigo_articulo}}
+						<small ng-show="(art.referencia)!=''" > Ref: {{art.referencia}} </small>
+						</h5>	
+ 						<h5>
+						<small ng-show="(art.detalles)!=''" ><i> {{art.detalles | ucwords}}</i></small>
+						</h5>
+						</td>
+						<td align="left" >{{art.precio_venta | currency: 'Bs. ':2}}</td>
+						<td style="text-align:center"> 
+							<select ng-disabled="!isLocal && art.cantidad_devuelta>=art.cantidad" ng-model="art.cant_devol" ng-options="val for val in getCantidadMax(art.cantidad, art)">
+								
+    							<option value="">Devolver</option>
+							</select> de: {{art.cantidad}}
+						</td>
+					<!--
+                        <td style="text-align:center" >
+							
+						<button ng-show="isLocal" ng-disabled="!art.cant_devol || art.cantidad_devuelta>=art.cantidad"  ng-click="devolver(art)" href="#" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-log-in"></i></button>
+						
+						</td>
+					-->
+
+                       <td style="text-align:center" ng-if="art.cantidad_devuelta">{{art.cantidad_devuelta}}</td>  
+						<td style="text-align:center" ng-if="!art.cantidad_devuelta">0</td>
+						<td style="text-align:center">{{ getTotalDev(art)| currency: 'Bs. ':2 }}</td>
+					 </tr>
+      				<td></td>
+					<td></td>
+					<td></td>
+					<td style="text-align:center"><b>Total: </b></td>
+					<td style="text-align:center">{{ getTotalDev2(venta_dev.venta) | currency: 'Bs. ':2 }}</td>
+                      </tbody>
+               	</table>
+        </div>
+</form>
+        <div class="modal-footer">
+			<button ng-show="isLocal" ng-disabled="!getTotalDev2(venta_dev.venta)" class="btn btn-primary" type="button" ng-click="devolver2(id_venta, venta_dev.venta)">Devolver</button>
+            <button class="btn btn-primary" type="button" ng-click="cancel()">Cerrar</button>
+           <!-- <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button> -->
+        </div>

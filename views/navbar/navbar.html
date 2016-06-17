@@ -1,0 +1,143 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+   <div class="container">  <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"  data-target="#nav-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+     	<a class="navbar-brand" href="#" onclick="window.location=''" >
+         {{Variables.AppName}}
+        <!--<img style="max-width:150px; margin-top: -7px;" src="<?= base_url('assets/images/logo.png'); ?>" > -->
+      	</a>
+      	
+    </div>                			       
+    <!-- ng-change="searchFnc('', topic)" ng-model-options='{ debounce: 1000 }'		 --> 
+      
+    <!-- Collect the nav links, forms, and other content for toggling -->
+<div ng-controller="menuCtrl" class="collapse navbar-collapse" id="nav-collapse" class="nav-collapse collapse">
+  <ul class="nav navbar-nav">
+       	
+  	<li ng-class="getClass('home')"><a id="home" title="Inicio" href="home" ><span class="glyphicon glyphicon-home"></span> Inicio</a></li>         
+ 	<li ng-class="getClass('cart')"><a id="cart" title="Pedido" href="cart" ><span class="glyphicon glyphicon-shopping-cart"></span> Pedido</a></li>
+  	<li ng-class="getClass('products') || getClass('products_list')"><a id="products" title="Cat&aacute;logo" ng-click="topic = null" href="products?topic="><span class="glyphicon glyphicon-book"></span> Cat&aacute;logo</a></li>
+    
+        <li class="dropdown" >
+          <a title="Login" ng-show="!isLoggedIn" href="#" class="dropdown-toggle" data-toggle="dropdown"><span  class="glyphicon glyphicon-user"></span> Login</a>
+         <!--  <a ng-show="isLoggedIn" ng-click="logout()" title="Salir" href="#" ><span  class="glyphicon glyphicon-log-out"></span></a>
+			 -->
+			<ul id="login-dp" class="dropdown-menu" >
+				<li>
+                        <div class="row">
+
+                                       <div class="col-md-12">
+
+
+                                                <form  ng-controller="loginCtrl"  ng-submit="login(user)" class="form" role="form" name="loginForm" id="login-nav" >
+
+                                                               <div class="form-group">
+                                                                        <label for="exampleInputEmail2">CI/RIF &oacute; Email:</label>
+                                                                        <input ng-model="user.username" type="text" class="form-control" id="username" name="username" placeholder="CI/RIF &oacute; Email"  required>
+                                                               </div>
+                                                               <div class="form-group">
+                                                                        <label for="exampleInputPassword2">Password:</label>
+                                                                        <input ng-model="user.password" type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                            <div class="help-block text-right"><a id="forget" href="forget">Olvid&oacute; el password?</a></div>
+                                                               </div>
+                                                               <div class="text-center">
+	
+                                           <button type ='submit' class = 'btn btn-primary' ng-disabled = '!loginForm.$valid' ><span class="glyphicon glyphicon-lock"></span> Enviar</button>
+                                                  <a id="register" href="register"> Registrarse</a>
+
+                                                               </div>
+                                                               <div class="checkbox">
+                                                                        <label>
+                                                                        <input type="checkbox"> Mantenerme logeado
+                                                                        </label>
+                                                               </div>
+                                                               <!-- 
+                                                               <flash-message id=1 duration="5000" show-close="true" on-dismiss="myCallback(flash)" ></flash-message>
+                                                               <div ng-show="flash">
+                                       <div role = "alert" class="alert alert-{{class}}" >{{ flash }}</div>
+                               </div> 
+                               -->
+								 </form>
+							</div>
+							
+					 </div>
+				</li>
+			</ul>
+        </li>
+        
+        
+        <li class="dropdown">
+          <a title="Men&uacute; - {{name | ucwords}}" ng-show="isLoggedIn" href="#" class="dropdown-toggle" data-toggle="dropdown"><span  class="glyphicon glyphicon-user"></span> Men&uacute;</a>
+          <ul class="dropdown-menu" role="menu">
+            <!--   <li class="dropdown-header"> {{ name | ucwords}} </li>  -->
+             <li><a ng-show="isAdmin" href="sales">Ventas <span class="glyphicon glyphicon-usd"></span></a>  </li>
+            <li ><a href="profile">Perfil <span class="glyphicon glyphicon-user"></span></a></li>
+            <li class="divider"></li>           
+            <li ><a href="#"  ng-click="logout()">Salir <span class="glyphicon glyphicon-log-out"></span></a></li>
+          </ul>
+        </li>
+      </ul>
+       
+ <ul class="nav navbar-nav navbar-right ">      
+ 
+                
+      </ul>
+      
+      <form id="search" class="navbar-form navbar-left" role= "search" ng-submit="clearUrl(topic); searchFnc('', topic)" >
+			        <div class="form-group ">
+			         	<div class="input-group ">
+				          	  <input 				          	  
+				          	  id = "topic"
+				          	  type="text" ng-model="topic"
+				          	  name="topic" class="form-control" 
+				          	  placeholder="Buscar..."			          	  		          	
+				          	  focus = "true"
+				          	  autofocus				          	  
+				          	  selectOnClick 				          	  
+				          	  onkeyup="$(this).val($(this).val().toUpperCase().replace('*', 'X'));  "                
+           					  onClick="this.setSelectionRange(0, this.value.length)"
+				          	 />
+				          	       
+				          	<span class="input-group-btn">
+				          	
+						    <a
+						    		id="searchBtn"	href='#'					    		
+						    		class="btn btn-default" 
+						    		data-toggle="collapse" data-target=".nav-collapse"
+						    		ng-click="clearUrl(topic); searchFnc('', topic);"
+						    		>
+						    	<span class="glyphicon glyphicon-search"></span> 
+						    </a> 
+			
+						    
+						    </span>
+						    			    
+						 
+					    </div>
+					    
+					      
+					    
+			        </div>
+	 	
+		</form>
+		    		     
+      
+            <ul class="nav navbar-nav navbar-right hidden-md hidden-sm hidden-xs ">
+                <li>
+                    <a href="cart" ui-sref="site.cart" style="padding: 3px 0 0 0; width:300px">
+                        <ngcart-summary></ngcart-summary>
+                    </a>
+                </li>
+            </ul>
+
+    
+  </div><!-- /.container-fluid -->
+      
+    </div><!-- /.navbar-collapse -->
+      
+</nav>

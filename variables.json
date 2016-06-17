@@ -1,0 +1,20 @@
+{
+    "variables": 
+    [
+        { 
+            "AppName":"RODASALIAS",
+            "ApiUrl":"http://localhost/tienda_api/api",
+            "Email":"info@rodasalias.com",
+            "WebMasterEmail": "alejandro.toba@gmail.com",
+            "WebMaster": "atoba",
+            "Base": "http://localhost/tienda/",
+            "BaseShort": "/tienda/",
+            "MetaDescription":"Rodamientos",
+            "META_KEYWORDS": "Rolineras, estoperas, chumaceras, herramientas, cadenas, sellos",
+            "META_AUTHOR": "RodaSalias"
+         
+            
+        }
+    ]
+            
+ }

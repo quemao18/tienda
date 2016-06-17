@@ -1,0 +1,147 @@
+
+<form  class="form-inline">
+  <div class="input-group">
+    <label for="exampleInputName2"> Desde </label>
+    <input class = "form-control-inline" type="date" id="date_ini" name="date_ini" ng-model="date.ini"
+       placeholder="yyyy-MM-dd" min="2010-01-01" required />
+  </div>
+  <div class="input-group">
+    <label for="exampleInputEmail2"> Hasta </label>
+   <input class = "form-control-inline" type="date" id="date_ini" name="date_end" ng-model="date.end"
+       placeholder="yyyy-MM-dd" min="2010-01-01" required />
+  </div>
+  <button ng-model="search" ng-click="getSales(date.ini, date.end)" class="btn btn-default" ><span class="glyphicon glyphicon-search"></span></button>
+  
+
+
+<div class="input-group ">
+					
+                        <input 
+                        size="30"
+                        id = "code"
+                        type="text" ng-model="code"
+                        name="code" class="form-control" 
+                        placeholder="Buscar art&iacute;culo..."				          	        	  		          	
+                        focus = "true" 
+                        autofocus
+                        selectOnClick 
+                        onkeyup="$(this).val($(this).val().toUpperCase().replace('*', 'X'));  "                
+                        onClick="this.setSelectionRange(0, this.value.length)"
+                       />
+
+                    </div>  
+                   <button ng-click="getSalesByItem(code)"
+                                        ng-disabled="!code.length" 
+                                        id = "btnSalesByItem"
+                                        type="submit" class="btn btn-default" >
+                                <span class="glyphicon glyphicon-search"></span> 
+                </button> 
+
+ </form>
+
+
+<hr>
+
+             <div ng-init="getSales(date.ini, date.end)" ng-show="ventas_web.venta_web" >
+        	<div class="panel panel-default">
+            <div class="panel-heading"><h3>Resumen de ventas <!-- <i>Del {{date_ini2}} al {{date_end2}}</i> --></h3></div>
+            <div  class="panel-body">
+<table class="table table-condensed" style="border-collapse:collapse;">
+
+    <thead>
+        <tr><th>&nbsp;</th>
+            <th>Nombre</th>
+            <th >Descricci&oacute;n</th>
+            <th>Total</th>
+            </tr>
+    </thead>
+
+    <tbody >
+        <tr  data-toggle="collapse" data-target="#demo1" class="accordion-toggle">
+                  <td><button ng-show="total_ventas_web>0" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button></td>
+            <td>Ventas internas</td>
+            <td>Ventas NO fiscales</td>
+            <td>{{total_ventas_web | currency: 'Bs. ':2}}</td>
+  
+        </tr>
+        <tr ng-show="total_ventas_web>0" >
+            <td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id="demo1"> 
+              <table class="table table-striped">
+                      <thead>                    
+                        <tr><th>&nbsp;</th><th>Venta #</th><th>Fecha Hora </th><th>Monto</th></tr>
+                      </thead>
+                      
+                      <tbody>
+                      
+                        <tr ng-repeat = "web in ventas_web.venta_web.venta | orderBy:'-fecha'">
+							             
+                        
+                        <td></td>
+                        <td><a ng-click="openSale(web)" href="#" >{{web.id_venta}}</a></td>
+                        <td>{{parseDate(web.fecha) | date:'medium'}}</td><td>{{web.total | currency: 'Bs. ':2}}</td>
+                        
+                        </tr>
+       
+                      </tbody>
+               	</table>
+              
+              </div> 
+              </td>
+  
+        </tr>
+        
+         <tr  data-toggle="collapse" data-target="#demo2" class="accordion-toggle">
+                  <td><button ng-show="total_devolucion_web>0" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-eye-open"></span></button></td>
+            <td>Devoluciones internas</td>
+            <td>Devoluciones NO fiscales</td>
+            <td>{{total_devolucion_web | currency: 'Bs. ':2}}</td>
+  
+        </tr>
+        <tr ng-show="total_devolucion_web>0">
+            <td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id="demo2"> 
+              <table class="table table-striped">
+                      <thead>
+                    
+                        <tr><th>&nbsp;</th><th>Devoluci&oacute;n #</th><th>Venta #</th><th>Fecha Hora </th><th>Monto</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat = "web in devoluciones_web.devolucion_web.devolucion | orderBy:'-id_devolucion'" ><td></td>
+                        <td><a ng-click="openDevol(web)" href="#" >{{web.id_devolucion}}</a></td><td><a ng-click="openSale(web)" href="#" >{{web.id_venta}}</a></td><td>{{parseDate(web.fecha) | date:'medium' }}</td><td>{{web.total | currency: 'Bs. ':2}}</td>
+                  
+                  </tr>
+       
+                      </tbody>
+               	</table>
+              
+              </div> 
+              </td>
+        </tr>
+        
+        
+        <tr  data-toggle="collapse" data-target="#demo2" class="accordion-toggle">
+               <td></td>
+                <td>Facturas fiscal</td>
+            <td>Facturas cobradas menos devoluciones, sin facturas a credito</td>
+            <td >{{total_facturas | currency: 'Bs. ':2}}</td>
+        </tr>
+         <tr  data-toggle="collapse" data-target="#demo3" class="accordion-toggle">
+            <td></td>
+            <td>Facturas fiscal pendientes</td>
+            <td>Facturas NO cobradas</td>
+            <td>{{total_facturas_credito | currency: 'Bs. ':2}}</td>
+        </tr>
+       
+        <tr  data-toggle="collapse" data-target="#demo3" class="accordion-toggle">
+            <td></td>
+            <td><strong>Total Cobrado</strong></td>
+            <td>Facturas fiscales mas internas menos devoluciones, sin facturas a credito</td>
+            <td><div ><strong>{{ total  | currency: 'Bs. ':2}}</strong></div></td>
+        </tr>
+       
+    </tbody>
+</table>
+            </div>
+        
+          </div> 
+        
+      </div>

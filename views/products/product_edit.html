@@ -1,0 +1,56 @@
+ <div class="modal-header">
+<flash-message duration="5000" show-close="true" on-dismiss="myCallback(flash)" ></flash-message>
+            <h3 class="modal-title">Editar aritculo {{product.codigo}} </h3>
+        </div>
+        <div class="modal-body">
+<form>
+ <fieldset class="form-group">
+    <label for="formGroupExampleInput0">Nombre</label>
+    <input  style="text-transform:uppercase" ng-model="product.nombre" ng-value="{{product.nombre}}" type="text" class="form-control" id="nombre" >
+ </fieldset>
+<fieldset class="form-inline">
+<fieldset class="form-group">
+    <label for="formGroupExampleInput1">Referencia</label></br>
+    <input  style="text-transform:uppercase" ng-model="product.referencia" ng-value="{{product.referencia}}" type="text" class="form-control" id="referencia" >
+  </fieldset>
+  <fieldset class="form-group">
+    <label for="formGroupExampleInput2">Medidas</label></br>
+    <input  onkeyup="$(this).val($(this).val().toUpperCase().replace('*', 'X'));  "  style="text-transform:uppercase" ng-model="product.medidas" ng-value="{{product.medidas}}" type="text" class="form-control" id="medidas" >
+    </fieldset>
+
+ 	<fieldset class="form-group">
+    <label for="formGroupExampleInput2">Marca</label></br>
+    <input  style="text-transform:uppercase" ng-model="product.marca" ng-value="{{product.marca}}" type="text" class="form-control" id="medidas" >
+ 	</fieldset>
+	<fieldset class="form-group">
+    <label for="formGroupExampleInput2">Ubicacion</label></br>
+    <input  style="text-transform:uppercase" ng-model="product.ubicacion" ng-value="{{product.ubicacion}}" type="text" class="form-control" id="medidas" >
+      </fieldset>
+</fieldset>
+</br>
+  <fieldset class="form-group">
+    <label  for="formGroupExampleInput3">Detalles</label>
+     <textarea style="text-transform:uppercase"  ng-model="product.detalles" ng-value="{{product.detalles}}" class="form-control" id="detalles" rows="3"></textarea>
+  </fieldset>
+</div>
+
+  <div class="modal-footer">
+  <button ng-disabled="false" class="btn btn-primary" type="button" ng-click="updateProduct(product)">Guardar</button>
+  <button class="btn btn-primary" type="button" ng-click="cancel()">Cerrar</button>      
+	</div>
+
+</script>
+
+<script type="text/ng-template" id="myModalImage.html">
+                <div class="modal-header">
+<h3 class="modal-title"> {{product.nombre | ucwords}} - {{product.codigo}} <small ng-show="(product.medidas)!=''"> ({{product.medidas}}) </small>
+	         </h3>           
+      
+</div>
+        <div class="modal-body" align="center">
+			<img height="500" width="500" ng-src="{{product.foto_articulo !='' ? (product.foto_articulo | replaceString:'z:\\premium\\administrativo8x\\fotos\\': 'assets/images/fotos/' ) : (product.foto_grupo | replaceString:'z:\\premium\\administrativo8x\\fotos\\': 'assets/images/fotos/' )}}" /> <!--popup image-->			
+		</div>
+
+  <div class="modal-footer">
+  <button class="btn btn-primary" type="button" ng-click="cancel()">Cerrar</button>      
+	</div>
