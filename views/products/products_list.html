@@ -67,10 +67,26 @@
 	
 	
 	     <div class="col-sm-4 col-xs-4 col-md-4 right">     
-	     	     
-    		<h3 ng-show="isLocal || isAdmin"  ng-class="product.meses_modificacion <= 1 ? 'text-success' : 'text-warning'">{{product.precio1 | roundPrice | currency:'Bs. '}}
-    		<span  title="{{{true: 'Actualizado recientemente.', false: 'Modificado hace ' + product.meses_modificacion +' meses'}[product.meses_modificacion <= 1]}}" 
-    		ng-class="product.meses_modificacion <= 1 ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-warning-sign'"></span></h3>		
+
+    		<del ng-show="product.precio_dolar > (product.precio1/dolartoday  )"><h3 ng-show="(isLocal || isAdmin) "  ng-class="product.meses_modificacion <= 1 ? 'text-success' : 'text-warning'"><span  title="{{{true: 'Actualizado recientemente.', false: 'Modificado hace ' + product.meses_modificacion +' meses'}[product.meses_modificacion <= 1]}}" 
+			ng-class="product.meses_modificacion <= 1 ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-warning-sign'"></span > 
+			{{product.precio1 | roundPrice | currency:'Bs. '}}
+    		<span  ng-show="Variables.DolarToday" title="DolarToday {{dolartoday | currency:'Bs. '}}" style="color: black; font-size: 14px;">{{product.precio1/dolartoday | currency:'$'}}</span>
+			</h3></del>
+			<h3 ng-show="(isLocal || isAdmin) && product.precio_dolar < (product.precio1/dolartoday)"  ng-class="product.meses_modificacion <= 1 ? 'text-success' : 'text-warning'"><span  title="{{{true: 'Actualizado recientemente.', false: 'Modificado hace ' + product.meses_modificacion +' meses'}[product.meses_modificacion <= 1]}}" 
+			ng-class="product.meses_modificacion <= 1 ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-warning-sign'"></span > 
+			{{product.precio1 | roundPrice | currency:'Bs. '}}
+    		<span  ng-show="Variables.DolarToday" title="DolarToday {{dolartoday | currency:'Bs. '}}" style="color: black; font-size: 14px;">{{product.precio1/dolartoday | currency:'$'}}</span>
+			</h3>
+			<!--
+			<h4 ng-show="(isLocal || isAdmin) && dolartoday!=''"  >{{product.precio1/dolartoday | currency:'$'}}
+    		<span   title="DolarToday {{dolartoday | currency:'Bs. '}}"
+    		class="glyphicon glyphicon-warning-sign"></span></h4>	
+			-->
+			<h4 class="text-warning" ng-show="(isLocal || isAdmin) && product.precio_dolar>0 && Variables.DolarToday"  ><span  title="Precio calculado con DolarToday actual {{dolartoday | currency:'Bs. '}}"	class="glyphicon glyphicon-warning-sign"></span>
+			{{product.precio_dolar*dolartoday | roundPrice | currency:'Bs. ' }}
+    		<span  title="Precio dolarizado con DolarToday a {{product.dolar_today | currency:'Bs. '}} al {{ product.fechamodifi | date:'dd/MM/yyyy' }}" style="color: black; font-size: 14px;">{{product.precio_dolar | currency:'$'}}</span>
+			</h4>			
     		<h3><strong ng-show="!isAdmin && !isLocal">
 					<span ng-show="product.existencia>0"  class="text-success">Disponible</span>
 					<span ng-show="product.existencia<=0" class="text-danger">Agotado</span>					

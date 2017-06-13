@@ -1,4 +1,4 @@
-<div class="list-group" ng-init="(topic == null ? searchFnc('', '') : searchFnc(group.codigo_grupo, topic))">
+<div class="list-group" ng-init="((topic == null || topic =='') ? searchFnc('', '') : searchFnc(group.codigo_grupo, topic))">
 <!-- ng-init="(topic == null ? cataloge() : searchFnc(group.codigo_grupo, topic))" -->
 <h4 class="list-group-item-heading">  
 	<a ng-click="loadGroup(group.codigo_grupo, topic) "  ng-repeat="group in products | orderBy:  'nombre_grupo'" href="#" class="list-group-item">	  

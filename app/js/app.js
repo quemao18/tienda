@@ -90,6 +90,11 @@ app.factory('mainInfo', function($resource) {
  
 });
 
+app.factory('dolartoday', function($resource, $http) { 
+ //return $resource('https://s3.amazonaws.com/dolartoday/data.json');
+    return $http.get('https://s3.amazonaws.com/dolartoday/data.json');
+});
+
 app.factory('Page', function() {
 	   var title = 'default';	  
 	   return {
@@ -195,7 +200,7 @@ app.factory("authUsers", function($http, $location, sesionesControl, Flash, main
                
             }).error(function(error){
             	//alert(user.box);           	
-            		//mensajesFlash.show(error.message, 'danger');
+                 //mensajesFlash.show(error.message, 'danger');
             	Flash.create('danger', error.message);
                 //$location.path("/")
             });

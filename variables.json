@@ -3,17 +3,21 @@
     [
         { 
             "AppName":"RODASALIAS",
-            "ApiUrl":"http://localhost/tienda_api/api",
+            "ApiUrl":"http://localhost:8080/tienda_api/api",
+            "ApiErrorMessage":"Error comunicando con el servidor.",
             "Email":"info@rodasalias.com",
             "WebMasterEmail": "alejandro.toba@gmail.com",
             "WebMaster": "atoba",
-            "Base": "http://localhost/tienda/",
+            "Base": "http://localhost:8080/tienda/",
             "BaseShort": "/tienda/",
             "MetaDescription":"Rodamientos",
             "META_KEYWORDS": "Rolineras, estoperas, chumaceras, herramientas, cadenas, sellos",
-            "META_AUTHOR": "RodaSalias"
-         
-            
+            "META_AUTHOR": "RodaSalias",
+            "Version": "130117",
+            "DolarToday": true,
+            "Iva1": "12",
+            "Iva2": "10",
+            "MontoMinimoIva2" : 178571.42857142855 
         }
     ]
             

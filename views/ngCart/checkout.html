@@ -4,7 +4,10 @@
 </div>
 
 <div ng-if="service=='sale'">
-    <button class="btn btn-primary" ng-click="checkout()" ng-disabled="!ngCart.getTotalItems()" ng-transclude>Venta</button>
+    <button class="btn btn-primary" ng-click="checkout()" ng-disabled="!ngCart.getTotalItems()" ng-transclude>Efectivo/Otros</button>
+</div>
+<div ng-if="service=='sale2'">
+    <button class="btn btn-primary" ng-click="checkout()" ng-disabled="!ngCart.getTotalItems()" ng-transclude>Debito/Credito</button>
 </div>
 
 <div ng-if="service=='save'">
@@ -14,6 +17,7 @@
 <div ng-if="service=='price'">
     <button  ng-click="checkout()" ng-disabled="settings.price<=0 || settings.price=='' " class="btn btn-secondary" ><span class="glyphicon glyphicon-refresh"></span> </button> 
 </div>
+
 
 <div ng-if="service=='exist' && settings.isAdmin">
     <button class="btn btn-primary" ng-click="checkout()" ng-disabled="!ngCart.getTotalUniqueItems()" ng-transclude>Existencia</button>

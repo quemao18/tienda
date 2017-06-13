@@ -1,17 +1,47 @@
 
 /* global app */
 
-app.controller('mainCtrl', [ '$scope', 'focus', 'Flash', 'sesionesControl', 'authUsers', 'mainInfo', '$location', 
-    function ( $scope, focus, Flash, sesionesControl, authUsers, mainInfo, $location) {   
+app.controller('mainCtrl', [ '$scope', '$http', 'focus', 'Flash', 'sesionesControl', 'authUsers', 'mainInfo', 'dolartoday', '$location', 
+    function ( $scope, $http, focus, Flash, sesionesControl, authUsers, mainInfo, dolartoday, $location) {   
     //$scope.Variables = [];
     
     $scope.date = new Date();
     focus ('topic');
-        
+    $scope.dolarUp = false;
+    //localStorage.setItem('dolartoday', '100');
+    dolartoday.success(function(data){
+    localStorage.setItem('dolartoday', data.USD.dolartoday);
+    $scope.dolartoday = data.USD.dolartoday;
+  }).error(function(){
+      localStorage.setItem('dolartoday', 0);
+      $scope.dolartoday = 0;
+      if(authUsers.isLocal())
+			Flash.create('danger', 'No hay respuesta del API de Dolar Today');
+		});
+  
+    
+    setInterval(function () {
+    dolartoday.success(function(data){
+      //console.log(Math.floor(Math.random() * 6) + 3680)
+      if(data.USD.dolartoday > localStorage.getItem('dolartoday')) 
+        $scope.dolarUp = true;
+          else
+        $scope.dolarUp = false;
+	    
+      $scope.dolartoday = data.USD.dolartoday;
+      localStorage.setItem('dolartoday', data.USD.dolartoday);
+      }).error(function(){
+      localStorage.setItem('dolartoday', 0);
+      $scope.dolartoday = 0;
+      if(authUsers.isLocal())
+			Flash.create('danger', 'No hay respuesta del API de Dolar Today');
+		});
+    }, 3600000);
+  
     mainInfo.get(function(data){
     $scope.Variables = data.variables[0];   
     Variables = data.variables[0]; 
-    var message = 'Información sólo por Email <a href ="mailto:' + Variables.Email + '?Subject=Información" target = "_blank">'+ Variables.Email +'</a>';
+    var message = 'Email <a href ="mailto:' + Variables.Email + '?Subject=Información" target = "_blank">'+ Variables.Email +'</a>';
     if(!authUsers.isLocal())
         Flash.create('warning', message, 0, {class: 'custom-class', id: '1'}, true);
   });
@@ -39,7 +69,7 @@ app.controller('mainCtrl', [ '$scope', 'focus', 'Flash', 'sesionesControl', 'aut
 app.controller('menuCtrl', [ '$scope', '$location', 'focus' ,'authUsers', function ($scope, $location, focus, authUsers) {
 	//$scope.Page = Page;
         // console.log(Variables);
-    $scope.isLoggedIn  = authUsers.isLoggedIn();
+  $scope.isLoggedIn  = authUsers.isLoggedIn();
 	$scope.isAdmin     = authUsers.isAdmin();
 	$scope.isLocal     = authUsers.isLocal();
         

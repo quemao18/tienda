@@ -1,0 +1,2 @@
+configurar el archivo de 
+variables.json (indicar la ruta del api)

@@ -52,13 +52,54 @@
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
- 		
-</head>
-<body id"body" ng-cloak ng-controller = "mainCtrl">
+ 		    <script src="app/libs/jquery.min.js"></script>
+			<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+			<script src="app/libs/bootstrap/v336/js/bootstrap.min.js"></script> 
+			<script src="app/libs/underscore.min.js"></script>
+			<script src="app/libs/ie10-viewport-bug-workaround.js"></script>  	
+		
+			<script src="app/libs/angularjs/1.5.5/angular.min.js"></script>    
+			<script src="app/libs/angularjs/1.5.5/angular-route.min.js"></script>
+			<script src="app/libs/angularjs/1.5.5/angular-resource.min.js"></script>
+			<script src="app/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+			<script src="app/libs/angularjs/1.5.5/angular-touch.min.js"></script>
+			<script src="app/libs/angularjs/1.5.5/angular-sanitize.min.js"></script>
+			<script src="app/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+			<script src="app/libs/angularjs/1.5.5/angular-mocks.js"></script>
+			<script src="app/libs/angularjs/1.5.5/angular-aria.min.js"></script>
 
+			<script src="app/libs/angular-filter.min.js"></script>
+  	
+			<script src="app/libs/angular-flash.min.js"></script>
+			<script src="app/libs/spin.min.js"></script>
+			<script src="app/libs/angular-spinner.min.js"></script>
+			<script src="app/libs/angular-loading-spinner.js"></script>
+			<script src="app/libs/loading-bar.min.js"></script>
+			
+			<script src="app/libs/ng-infinite-scroll.min.js"></script>
+			
+			<script src="app/libs/ngCart.js"></script>
+			
+			<script src="app/libs/angular-prompt.min.js"></script>
+			<script src="app/libs/ui-bootstrap.js"></script>
+			<script src="app/libs/ui-bootstrap-tpls.js"></script>
+			<script src="app/libs/angucomplete-alt.js"></script>
+			
+			<script src="app/js/app.js"></script>
+			<script src="app/js/directives.js"></script>
+			<script src="app/js/filters.js"></script>
+			<script src="app/js/controllers/mainCtrl.js"></script>
+			<script src="app/js/controllers/usersCtrl.js"></script>
+			<script src="app/js/controllers/productsCtrl.js"></script>
+			<script src="app/js/controllers/salesCtrl.js"></script>
+    
+</head>
+
+<body id="body" ng-controller="mainCtrl"  > <!-- le quite ng-controller="mainCtrl" -->
+<div>
  <my-navbar></my-navbar>
- 
-    <div class="container">
+</div>
+    <div ng-cloak class="container" ng-controller="searchCtrl"  >
         <div class="row-fluid">          
             <div class="page-header">										      
                 <flash-message duration="5000" show-close="true" on-dismiss="myCallback(flash)" ></flash-message>					       
@@ -66,7 +107,7 @@
 
             </div>	
 
-            <div class="page" ng-view></div>        
+            <div ng-cloak  class="page" ng-view></div>        
             <span us-spinner></span>             
         </div>     
         
@@ -76,54 +117,19 @@
       <div class="container">            
          <p align="left" class="text-muted" id="copyright">
         <span ng-show="name!=null">{{name | ucwords}} - {{username}} |</span> &copy; {{date | date:"yyyy"}}.
-	Desarrollado por  <a href ="mailto:{{Variables.WebMasterEmail}}?Subject=Información" target = "_blank"> {{Variables.WebMaster}} </a>
+	Desarrollado por  <a href ="mailto:{{Variables.WebMasterEmail}}?Subject=Información" target = "_blank"> {{Variables.WebMaster}} </a> - <strong ng-show="(isLocal || isAdmin) && Variables.DolarToday">DolarToday {{dolartoday | currency:'Bs. '}}</strong>
+      <span ng-show="(isLocal || isAdmin) && Variables.DolarToday && dolarUp" title="Subió con respecto a la última vez" class="glyphicon glyphicon-arrow-up"></span>
+	  <span ng-show="(isLocal || isAdmin) && Variables.DolarToday && !dolarUp" title="Bajó con respecto a la última vez" class="glyphicon glyphicon-arrow-down"></span>	
 	</p>
       </div>
     </footer>
     
-    <script src="app/libs/jquery.min.js"></script> 
-  	<script src="app/libs/bootstrap/v336/js/bootstrap.min.js"></script> 
-  	<script src="app/libs/underscore.min.js"></script>
-  	<script src="app/libs/ie10-viewport-bug-workaround.js"></script>  	
-   
-    <script src="app/libs/angularjs/1.5.5/angular.min.js"></script>    
-  	<script src="app/libs/angularjs/1.5.5/angular-route.min.js"></script>
-  	<script src="app/libs/angularjs/1.5.5/angular-resource.min.js"></script>
-  	<script src="app/libs/angularjs/1.5.5/angular-animate.min.js"></script>
-  	<script src="app/libs/angularjs/1.5.5/angular-touch.min.js"></script>
-  	<script src="app/libs/angularjs/1.5.5/angular-sanitize.min.js"></script>
-  	<script src="app/libs/angularjs/1.5.5/angular-messages.min.js"></script>
-  	<script src="app/libs/angularjs/1.5.5/angular-mocks.js"></script>
-  	<script src="app/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+  
   	
    	
   	<!-- ojo <script src="<?= base_url() ?>assets/scripts/libs/ui-bootstrap-tpls-0.10.0.min.js"></script> -->
   	
-  	<script src="app/libs/angular-filter.min.js"></script>
-  	
-  	<script src="app/libs/angular-flash.min.js"></script>
-  	<script src="app/libs/spin.min.js"></script>
-  	<script src="app/libs/angular-spinner.min.js"></script>
-  	<script src="app/libs/angular-loading-spinner.js"></script>
-   	<script src="app/libs/loading-bar.min.js"></script>
-   	
-   	<script src="app/libs/ng-infinite-scroll.min.js"></script>
-   	
-   	<script src="app/libs/ngCart.js"></script>
-   	
-   	<script src="app/libs/angular-prompt.min.js"></script>
-   	<script src="app/libs/ui-bootstrap.js"></script>
-   	<script src="app/libs/ui-bootstrap-tpls.js"></script>
-   	<script src="app/libs/angucomplete-alt.js"></script>
-   	  
-    <script src="app/js/app.js"></script>
-    <script src="app/js/directives.js"></script>
-    <script src="app/js/filters.js"></script>
-    <script src="app/js/controllers/mainCtrl.js"></script>
-    <script src="app/js/controllers/usersCtrl.js"></script>
-    <script src="app/js/controllers/productsCtrl.js"></script>
-    <script src="app/js/controllers/salesCtrl.js"></script>
-    
+
     <script type="text/javascript">
     
     
@@ -131,11 +137,23 @@
     if( $(e.target).is('a') ) {
         $(this).removeClass('in').addClass('collapse');
     }
+	    if( $(e.target).is('a') ) {
+        $(this).collapse('hide');
+    }
+	 if( $(e.target).is('a') && $(e.target).attr('class') != 'dropdown-toggle' ) {
+        $(this).collapse('hide');
+    }
 });
 
 
 
+
     </script>
-   
+
+<!--Add the following script at the bottom of the web page (immediately before the </body> tag)
+<script type="text/javascript" async="async" defer="defer" data-cfasync="false" src="http://mylivechat.com/chatinline.aspx?hccid=31401598"></script>
+
+-->
 </body>
+
 </html>

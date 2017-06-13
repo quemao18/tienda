@@ -1,5 +1,5 @@
 <div class="alert alert-warning" role="alert" ng-show="ngCart.getTotalUniqueItems() === 0">
-    Nada en el pedido
+    Nada en el pedido...
 </div>
 
 <div class="table-responsive col-lg-12" ng-show="ngCart.getTotalUniqueItems() > 0">
@@ -39,13 +39,22 @@
             <td ng-show="isLocal" class="text-right">Total:</td>
             <td ng-show="isLocal" class="text-right">{{ ngCart.totalCost() | currency: 'Bs.' }}</td>
         </tr>
+        <tr ng-show="ngCart.totalCost()<200000" style="font-weight: bold;  "   >
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+           <!-- <td ng-show="isLocal" class="text-right text-warning">Total IVA 10%:</td>
+            <td ng-show="isLocal" class="text-right text-warning">{{ ngCart.totalCostIVA()| currency: 'Bs.' }}</td> -->
+        </tr>
         </tfoot>
         <tbody>
         <tr ng-repeat="item in ngCart.getCart().items track by $index">
         
             <td><h4><span ng-click="ngCart.removeItemById(item.getId())" class="glyphicon glyphicon-remove"></span></h4></td>
 
-            <td width="60%">
+            <td width="50%">
             <h4 > {{item.getName() | ucwords}}
 	            <small ng-show="(item.getData().medidas)!=''"> ({{item.getData().medidas}}) </small>
 	        </h4>	
@@ -69,7 +78,7 @@
 	   		
             </td>
             
-            <td width="13%"  ng-show="isLocal"  class="text-right">
+            <td width="15%"  ng-show="isLocal"  class="text-right">
             
             		
             		<div class="row">
@@ -84,22 +93,37 @@
 					            		ng-value="{{ item.getPrice() }}">
 					            	
 					      <span class="input-group-btn">
-					       <ngcart-checkout ng-click="ajust_price" service="price" settings="{ url:Variables.ApiUrl + '/cart/price', price:price, item_id:item.getId()}"></ngcart-checkout>
+					       <ngcart-checkout ng-click="ajust_price" service="price" settings="{ url:Variables.ApiUrl + '/cart/price', price:price, item_id:item.getId(), dolartoday: dolartoday}"></ngcart-checkout>
 					     
 					      </span>
 					    </div>
 					  </div>
 					
-				         	
-           	<h5 ng-model="ajust_price" ng-class="item.getData().meses_modificacion <= 1 ? 'text-success' : 'text-warning'">{{ajust_price ? price : item.getData().precio1 | roundPrice | currency:'Bs. '}}
+			<del ng-show="item.getData().precio_dolar > item.getData().precio1/dolartoday"><h6 ng-model="ajust_price" ng-class="item.getData().meses_modificacion <= 1 ? 'text-success' : 'text-warning'">{{ajust_price ? price : item.getData().precio1 | roundPrice | currency:'Bs. '}}
     		<span title="{{{true: 'Actualizado recientemente.', false: 'Modificado hace ' + item.getData().meses_modificacion +' meses'}[item.getData().meses_modificacion <= 1]}}" 
-    		ng-class="item.getData().meses_modificacion <= 1 ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-warning-sign'"></span></h5>
-           		
+    		ng-class="item.getData().meses_modificacion <= 1 ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-warning-sign'"></span>
+            <span ng-show="Variables.DolarToday"  title="DolarToday {{dolartoday | currency:'Bs. '}}" style="color: black; font-size: 11px;"> {{item.getData().precio1/dolartoday | currency:'$'}} </span>
+            </h6></del>         	
+           	<h6 ng-show="item.getData().precio_dolar < item.getData().precio1/dolartoday" ng-model="ajust_price" ng-class="item.getData().meses_modificacion <= 1 ? 'text-success' : 'text-warning'">{{ajust_price ? price : item.getData().precio1 | roundPrice | currency:'Bs. '}}
+    		<span title="{{{true: 'Actualizado recientemente.', false: 'Modificado hace ' + item.getData().meses_modificacion +' meses'}[item.getData().meses_modificacion <= 1]}}" 
+    		ng-class="item.getData().meses_modificacion <= 1 ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-warning-sign'"></span>
+            <span ng-show="Variables.DolarToday"  title="DolarToday {{dolartoday | currency:'Bs. '}}" style="color: black; font-size: 11px;"> {{item.getData().precio1/dolartoday | currency:'$'}} </span>
+            </h6><!--
+           <h6 ng-show="(isLocal || isAdmin) && dolartoday!=''"  >{{item.getData().precio1/dolartoday | currency:'$'}}
+    		<span   title="DolarToday {{dolartoday | currency:'Bs. '}}"
+    		class="glyphicon glyphicon-warning-sign"></span></h6>
+            -->
+            <h6 ng-show="(isLocal || isAdmin) && item.getData().precio_dolar>0 && Variables.DolarToday"  >{{item.getData().precio_dolar*dolartoday | roundPrice | currency:'Bs.'}}
+            <span ng-show="Variables.DolarToday"   title="Precio calculado con DolarToday actual {{dolartoday | currency:'Bs. '}}"	class="glyphicon glyphicon-warning-sign"></span>
+			<span ng-show="Variables.DolarToday"   title="Precio dolarizado con DolarToday a {{item.getData().dolar_today | currency:'Bs. '}} al {{item.getData().fechamodifi | date:'dd/MM/yyyy' }}" style="color: black; font-size: 11px;">{{item.getData().precio_dolar | currency:'$'}}</span>
+			
+            </h6>		
   					
             </td>
             
             
             <td width="15%" ng-show="isLocal"  class="text-right">{{ item.getTotal() | currency : 'Bs. ' }}</td>
+            
         </tr>
         </tbody>
     </table>
@@ -108,12 +132,16 @@
 <hr>
 
 <ngcart-checkout  ng-show="isLocal"  service="sale" settings="{ url:Variables.ApiUrl + '/cart/sale' }"></ngcart-checkout>
+<!--<ngcart-checkout  ng-show="isLocal"  service="sale2" settings="{ url:Variables.ApiUrl + '/cart/sale_iva' }"></ngcart-checkout>-->
 <ngcart-checkout  ng-show="isLocal"  service="save" settings="{ url:Variables.ApiUrl + '/cart/save' }"></ngcart-checkout>
 <!-- 
 <button ng-show="isLocal" class="btn btn-primary btn" type="button" ng-click="openRegister(product)">Cliente</button>				 
-	 -->	   		
+	 -->	
+  		
 <ngcart-checkout  ng-show="!isLocal" service="inquire" settings="{ url:Variables.ApiUrl + '/cart/inquire' }"></ngcart-checkout>
 <ngcart-checkout  ng-show="isLocal"  ng-click="ajust_exist" service="exist" settings="{ url:Variables.ApiUrl + '/cart/exist', isAdmin:isAdmin }"></ngcart-checkout>
+
+
 <hr>
 
 <style>

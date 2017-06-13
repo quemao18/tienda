@@ -40,14 +40,16 @@ app.controller("forgetCtrl", ['$scope', '$location','Page', '$http', 'Flash', fu
 							$location.path("/");
 			    		 //$timeout(window.location='/', 2000);
 			    	    }).error(function(error){
-			    	    	Flash.create('danger', error.message);
+			    	    	//Flash.create('danger', error.message);
+							Flash.create('danger', Variables.ApiErrorMessage);
 			                //$location.path("/")
 			            });
 		 
     	 //console.log(data);
     	
     }).error(function(data){
-    	Flash.create('danger', data.message,0);
+    	//Flash.create('danger', data.message, 0);
+		Flash.create('danger', Variables.ApiErrorMessage);
     });
     };
     
@@ -74,7 +76,8 @@ function($scope, $http, $location, authUsers, Page, $routeParams, Flash ){
 		//$timeout(window.location='welcome', '3000');
 	       //$scope.user = user;
 	    }).error(function(error){
-	    	Flash.create('danger', error.message,0);
+	    	//Flash.create('danger', error.message,0);
+			Flash.create('danger', Variables.ApiErrorMessage);
         	//$location.path("/")
         });
     
@@ -104,7 +107,9 @@ app.controller("editCtrl", ['$http', '$scope', '$location', 'focus', 'authUsers'
     	user.passwordConf = ""; 
      	user.password = "";
     	$scope.user = user;	
-    });
+    }).error(function(){
+			Flash.create('danger', Variables.ApiErrorMessage);
+		});
 	
     //authUsers.flash = "";
     //función que llamamos al hacer sumbit al formulario
@@ -137,13 +142,16 @@ app.controller("editCtrl", ['$http', '$scope', '$location', 'focus', 'authUsers'
 		          			$location.path("/");
 		          		 //$timeout(window.location='welcome', 2000);
 		          	    }).error(function(error){
-		          	    	Flash.create('danger', error.message);
+		          	    	//Flash.create('danger', error.message);
+							Flash.create('danger', Variables.ApiErrorMessage);
+							  
 		                    //$location.path("/")
 		                });
         	
     	    }).error(function(error){
             	//mensajesFlash.clear();
-    	    	Flash.create('danger', error.message);
+    	    	//Flash.create('danger', error.message);
+				Flash.create('danger', Variables.ApiErrorMessage);
                 //$location.path("/")
             });
     	
@@ -155,28 +163,43 @@ app.controller("editCtrl", ['$http', '$scope', '$location', 'focus', 'authUsers'
 app.controller("registerCtrl", ['$http', '$scope', '$location', 'authUsers', 'Page', 'sesionesControl', 'Flash', '$timeout', 'focus', function($http, $scope, $location, authUsers, Page, sesionesControl, Flash, $timeout, focus){
 	$scope.user.password = "";
 	$scope.user.passwordConf = "";
-
-
+	$scope.user.nombre = '';
+	$scope.disabled = false;
  $scope.focusOut = function(val) {
     		   var focusInputElem = document.getElementById('username');
     		   //console.log((val));
     		   if(!validarRIF(val)) {
     				$scope.error = true; 
+					$scope.user.nombre = '';
+					$scope.disabled = false;
     				focusInputElem.focus();
+					focus('username');
     				return;
-    			}else{		                        				
+    			}else{		
+					$scope.disabled= true;      
+			  		$scope.user.nombre = 'Consultando...';
     				$scope.error = false; 
     				//$scope.$broadcast('angucomplete-alt:changeInput', 'codigo', focusInputElem.value);
     				$http.get(Variables.ApiUrl + '/users/nombre_rif/?rif='+val ) .success(function(data){
+					//	alert(data);
     				//$http.get('http://contribuyente.seniat.gob.ve/getContribuyente/getrif?rif='+focusInputElem.value ) .success(function(data){
-    				//console.log(data);
-    					//if(val === undefined){
-    					$scope.user.nombre = data.nombre;		                        				   				 		                        		        				 		                        		        
-                    	if(data.nombre!='') focus('email');
+					$scope.disabled = false;	
+					//console.log(data);
+    					//if(val === undefined){			   				 		                        		        				 		                        		        
+                    	if(data.status) {
+							$scope.user.nombre = data.nombre;
+							focus('email');
+						}else{
+							focus('name');
+							$scope.user.nombre = data.nombre;
+							
+						}
     					
                        //}
                                                     
-        			});
+        			}).error(function(){
+						Flash.create('danger', Variables.ApiErrorMessage);
+					});
         			
     			}
                     		   
@@ -202,7 +225,8 @@ app.controller("registerCtrl", ['$http', '$scope', '$location', 'authUsers', 'Pa
 							$location.path("/");
 			    		 //$timeout(window.location='/', 2000);
 			    	    }).error(function(error){
-			    	    	Flash.create('danger', error.message);
+			    	    	//Flash.create('danger', error.message);
+							Flash.create('danger', Variables.ApiErrorMessage);
 			                //$location.path("/")
 			            });
 					 
@@ -210,7 +234,8 @@ app.controller("registerCtrl", ['$http', '$scope', '$location', 'authUsers', 'Pa
 				$location.path("/");
     		 //$timeout(window.location='welcome', 2000);
     	    }).error(function(error){
-    	    	Flash.create('danger', error.message);
+    	    	//Flash.create('danger', error.message);
+				Flash.create('danger', Variables.ApiErrorMessage);
                 //$location.path("/")
             });
 		 

@@ -51,7 +51,7 @@
     <thead>
         <tr><th>&nbsp;</th>
             <th>Nombre</th>
-            <th >Descricci&oacute;n</th>
+            <th >Descripci&oacute;n</th>
             <th>Total</th>
             </tr>
     </thead>
@@ -68,7 +68,7 @@
             <td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id="demo1"> 
               <table class="table table-striped">
                       <thead>                    
-                        <tr><th>&nbsp;</th><th>Venta #</th><th>Fecha Hora </th><th>Monto</th></tr>
+                        <tr><th>&nbsp;</th><th>Venta #</th><th>Fecha Hora </th><th>Tipo</th><th>Monto</th></tr>
                       </thead>
                       
                       <tbody>
@@ -78,7 +78,9 @@
                         
                         <td></td>
                         <td><a ng-click="openSale(web)" href="#" >{{web.id_venta}}</a></td>
-                        <td>{{parseDate(web.fecha) | date:'medium'}}</td><td>{{web.total | currency: 'Bs. ':2}}</td>
+                        <td>{{parseDate(web.fecha) | date:'medium'}}</td>
+                        <td>{{web.tipo | ucwords}}</td>
+                        <td>{{web.total | currency: 'Bs. ':2}}</td>
                         
                         </tr>
        
@@ -135,7 +137,7 @@
             <td></td>
             <td><strong>Total Cobrado</strong></td>
             <td>Facturas fiscales mas internas menos devoluciones, sin facturas a credito</td>
-            <td><div ><strong>{{ total  | currency: 'Bs. ':2}}</strong></div></td>
+            <td><div ><strong>{{ total  | currency: 'Bs. ':2}}</strong> <span ng-show="Variables.DolarToday"  title="Aproximado en $ según precio DolarToday {{ dolartoday  | currency: 'Bs. ':2}}">({{ total/dolartoday  | currency: '$':2}})</span></div></td>
         </tr>
        
     </tbody>

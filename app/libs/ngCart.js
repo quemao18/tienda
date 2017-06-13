@@ -27,12 +27,17 @@ angular.module('ngCart', ['ngCart.directives'])
 
     }])
 
-    .service('ngCart', ['$rootScope', 'ngCartItem', 'store', 'sesionesControl', '$location', function ($rootScope, ngCartItem, store, sesionesControl, $location) {
+    .service('ngCart', ['$rootScope', 'ngCartItem', 'store', 'sesionesControl', '$location', '$http', function ($rootScope, ngCartItem, store, sesionesControl, $location, $http) {
+
+        $http.get('./variables.json').success(function(data) {
+            var Variables = data.variables[0]; 
+        });
 
         this.init = function(){
             this.$cart = {
                 shipping : null,
                 taxRate : null,
+                ivaRate: null,
                 tax : null,
                 items : []
             };
@@ -90,6 +95,9 @@ angular.module('ngCart', ['ngCart.directives'])
             return +parseFloat(((this.getSubTotal()/100) * this.getCart().taxRate )).toFixed(2);
         };
 
+        this.getIvaRate = function(){
+            return this.$cart.ivaRate
+        };
         this.setCart = function (cart) {
             this.$cart = cart;
             return this.getCart();
@@ -126,6 +134,20 @@ angular.module('ngCart', ['ngCart.directives'])
 
         this.totalCost = function () {
             return +parseFloat(this.getSubTotal() + this.getShipping() + this.getTax()).toFixed(2);
+        };
+
+        this.totalCostIVA = function () {
+
+            var sinIVA = this.getSubTotal()/1.12;
+            if(sinIVA< Variables.MontoMinimoIva2)
+                this.$cart.ivaRate = Variables.Iva2//10
+                else
+                this.$cart.ivaRate = Variables.Iva1//12
+            //console.log(iva);
+            //console.log(this.getCart());
+            var conIVA = sinIVA + (sinIVA * this.$cart.ivaRate/100);
+
+            return +parseFloat( conIVA  ).toFixed(2);
         };
 
         this.removeItem = function (index) {
@@ -179,9 +201,11 @@ angular.module('ngCart', ['ngCart.directives'])
             return {
                 shipping: this.getShipping(),
                 tax: this.getTax(),
+                ivaRate: this.getIvaRate(),
                 taxRate: this.getTaxRate(),
                 subTotal: this.getSubTotal(),
                 totalCost: this.totalCost(),
+                totalCostIVA: this.totalCostIVA(),
                 username: sesionesControl.get('username'),
                 name: sesionesControl.get('name'),
                 email: sesionesControl.get('email'),
@@ -342,7 +366,7 @@ angular.module('ngCart', ['ngCart.directives'])
         }
     }])
 
-    .controller('CartController',['$scope', 'ngCart', 'authUsers', '$modal', 'mainInfo', function($scope, ngCart, authUsers, $modal, mainInfo) {
+    .controller('CartController',['$scope', 'ngCart', 'authUsers', '$modal', 'mainInfo', 'dolartoday', function($scope, ngCart, authUsers, $modal, mainInfo, dolartoday) {
         $scope.ngCart = ngCart;
     	$scope.isLoggedIn  = authUsers.isLoggedIn();
     	$scope.isAdmin     = authUsers.isAdmin();
@@ -352,6 +376,13 @@ angular.module('ngCart', ['ngCart.directives'])
         $scope.Variables = data.variables[0]; 
         //console.log(Variables);
       });
+
+       //dolartoday.get(function(data){
+            //console.log(data.USD.dolartoday);
+        //    $scope.dolartoday = data.USD.dolartoday;
+        //});
+
+        $scope.dolartoday = localStorage.getItem('dolartoday');
 
 	  	$scope.openRegister = function (product) {
 		//$log.info(size);
@@ -487,10 +518,11 @@ angular.module('ngCart.directives', ['ngCart.fulfilment'])
                     fulfilmentProvider.setService($scope.service);
                     fulfilmentProvider.setSettings($scope.settings);
                     
-                    fulfilmentProvider.checkout().success(function (data, status, headers, config) {
+                    fulfilmentProvider.checkout()
+                        .then(function (data, status, headers, config) {
                             $rootScope.$broadcast('ngCart:checkout_succeeded', data);
                         })
-                        .error(function (data, status, headers, config) {
+                        .catch(function (data, status, headers, config) {
                             $rootScope.$broadcast('ngCart:checkout_failed', {
                                 statusCode: status,
                                 error: data
@@ -573,9 +605,25 @@ angular.module('ngCart.fulfilment', [])
                     { data: ngCart.toObject()}).success(function(data){
                     	Flash.create('success', data.message);
                     	ngCart.empty();
-                    	}).error(function(error){
-                    		Flash.create('danger', error.message);
-                    	} );
+                    	}).error(function(){
+                            Flash.create('danger', Variables.ApiErrorMessage);
+                        });
+            
+        };       
+        
+ }])
+
+  .service('ngCart.fulfilment.sale2', ['$http', 'ngCart', 'Flash', function($http, ngCart, Flash){
+
+        this.checkout = function(settings){
+            
+        	return $http.post(settings.url,
+                    { data: ngCart.toObject()}).success(function(data){
+                    	Flash.create('success', data.message);
+                    	ngCart.empty();
+                    	}).error(function(){
+                        Flash.create('danger', Variables.ApiErrorMessage);
+                    });
             
         };       
         
@@ -598,24 +646,28 @@ angular.module('ngCart.fulfilment', [])
 				                   focus('codigo_value');
 				                   $scope.error=false;
 				                   
-		                        	$http({
+		                        	            $http({
                                                     method: 'GET',
                                                     url: Variables.ApiUrl + '/users/client_type_premium/'
                                                     //data: { applicationId: 3 }
                                                 }).success(function (result) {
                                                 $scope.tipoRes = result;
-                                            });
-			                        			                      
+                                                }).error(function(){
+                                                        Flash.create('danger', Variables.ApiErrorMessage);
+                                                });
+                                                                        
 			                        
-			                   	$http({
+			                   	                $http({
                                                     method: 'GET',
                                                     url: Variables.ApiUrl + '/users/client_zone_premium/'
                                                    // data: { zone: '' }
                                                      }).success(function (result) {
                                                      $scope.zoneRes = result;
 			                   		    
-			                   		 });
-		                        	   
+                                                }).error(function(){
+                                                    //Flash.create('danger', Variables.ApiErrorMessage);
+                                                });
+                                                                            
 		                        	   
                                                     $scope.focusIn = function (){
                                                      $scope.error=false;
@@ -646,7 +698,9 @@ angular.module('ngCart.fulfilment', [])
 		                        					focus('phone');
                                                                                 }
                                                                                 
-			                        			});
+			                        			}).error(function(){
+                                                    //Flash.create('danger', Variables.ApiErrorMessage);
+                                                });
 			                        			
 		                        			}
 		                        		   
@@ -678,19 +732,18 @@ angular.module('ngCart.fulfilment', [])
 		                        					//guarda en espera
 		                        					
 		                        					$http.post(settings.url,
-                                                                                { data: ngCart.toObject(), options: settings.options, codClient: codigo, name: user.originalObject.nombre, zone: user.originalObject.zona }).success(function(data){
+                                                                { data: ngCart.toObject(), options: settings.options, codClient: codigo, name: user.originalObject.nombre, zone: user.originalObject.zona }).success(function(data){
 				                                            	Flash.create('success', data.message);
 				                                            	//$timeout( $modalInstance.dismiss() , 2000);
 				                                            	$modalInstance.dismiss();
 				                                            	ngCart.empty();				                                            	
-				                                            	}).error(function(error){
-				                                            		Flash.create('danger', error.message, 0);
+				                                            	}).error(function(){
+				                                            		Flash.create('danger', Variables.ApiErrorMessage, 0);
 				                                            	} );
 		                        	    		
-		                        	    	    }).error(function(error){
-		                        	    	    	Flash.create('danger', error.message);
-		                        	                //$location.path("/")
-		                        	            });
+		                        	    	    }).error(function(){
+                                                    Flash.create('danger', Variables.ApiErrorMessage);
+                                                });
 		                        			 
 		                        			
 		                        			//guarda en espera por defecto
@@ -736,10 +789,10 @@ angular.module('ngCart.fulfilment', [])
                     { data: ngCart.toObject(), options: settings.options}).success(function(data){
                     	Flash.create('success', data.message);
                     	ngCart.empty();
-                    	}).error(function(error){
-                    		Flash.create('danger', error.message, 0);
-                    	} );
-                    	
+                    	}).error(function(){
+                            Flash.create('danger', Variables.ApiErrorMessage);
+                        });
+                                        
             
         } ;      
         
@@ -748,28 +801,29 @@ angular.module('ngCart.fulfilment', [])
  .service('ngCart.fulfilment.exist', ['$http', 'ngCart', 'Flash', function($http, ngCart, Flash){
 
         this.checkout = function(settings){
-        //var result ='';
+        var ex = 'true';
         var cart = ngCart.getCart();
         	angular.forEach(cart.items, function (item, index) {
+            
             	//item.setData({precio1:item.getPrice()});
         		//if(settings.item_id == item.getData().codigo){
         	 item.getData().existencia = item.getQuantity();
         		//item.getData().meses_modificacion =1;
             	//Flash.create('success', 'ngCart:change',0);
-           
-            
         	return $http.post(settings.url,
                     { data: ngCart.toObject(), options: settings.options}).success(function(data){
                     	//Flash.create('success', data.message, 1000);
-                    	//result= data.message;
-                    	//ngCart.item.setPrice(data.price);                                            
-                    	}).error(function(error){
-                    		//Flash.create('danger', error.message);
-                    		//result= data.message;
-                    	} );       
+                        ex='true';   
+                    }).error(function(){
+                        ex='false';
+                        });    
         	//}
+          
         });
-       Flash.create('success', 'Existencia actualizada...', 1000);
+       //if(this.ex=='true')
+       Flash.create('success', 'Existencia ajustada...', 1000);
+       //else
+       //Flash.create('danger', Variables.ApiErrorMessage);
         	
         };       
         
@@ -790,12 +844,12 @@ angular.module('ngCart.fulfilment', [])
            
             
         	return $http.post(settings.url,
-                    { item: item, options: settings.options}).success(function(data){
+                    { item: item, dolarToday:settings.dolartoday, options: settings.options}).success(function(data){
                     	Flash.create('success', data.message, 1000);
                     	//ngCart.item.setPrice(data.price);                                            
-                    	}).error(function(error){
-                    		Flash.create('danger', error.message);
-                    	} );       
+                    	}).error(function(){
+                            Flash.create('danger', Variables.ApiErrorMessage);
+                        });      
         	}
         });
         } ;      
@@ -810,8 +864,8 @@ angular.module('ngCart.fulfilment', [])
 			  }).then(function(){
 			    //he hit ok and not cancel
                            //console.log(ngCart);
-                           if(!authUsers.isLoggedIn()) {$location.path('/login'); return;}
-                           
+                    if(!authUsers.isLoggedIn()) {$location.path('/login'); return;}
+                        
                     $http.post(settings.url,
                     { data: ngCart.toObject(), options: settings.options }).success(function(data){
                     Flash.create('success', data.message,0);
@@ -820,9 +874,8 @@ angular.module('ngCart.fulfilment', [])
                     //$modalInstance.dismiss();
                     ngCart.empty();	
                     
-                    }).error(function(error){
-                        //console.log(error);
-                            Flash.create('danger', error.message, 0);
+                    }).error(function(){
+                        Flash.create('danger', Variables.ApiErrorMessage);
                     });
 		//console.log('ok');
             });

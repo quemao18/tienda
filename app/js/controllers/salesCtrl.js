@@ -2,8 +2,8 @@
 /* global app */
 
 app.controller('salesCtrl', 
-['$scope', '$filter', '$http', '$modal', 'Page', '$location', 'focus', 'sesionesControl', 'authUsers', 'mainInfo',
-function ($scope, $filter, $http, $modal, Page, $location, focus, sesionesControl, authUsers, mainInfo) {
+['$scope', '$filter', '$http', '$modal', 'Page', '$location', 'focus', 'sesionesControl', 'authUsers', 'mainInfo', 'dolartoday',
+function ($scope, $filter, $http, $modal, Page, $location, focus, sesionesControl, authUsers, mainInfo, dolartoday) {
 	$scope.Page = Page;
 	$scope.isLocal = authUsers.isLocal();
         
@@ -16,6 +16,12 @@ function ($scope, $filter, $http, $modal, Page, $location, focus, sesionesContro
           });
         
 	//$scope.Math = window.Math;
+	//	dolartoday.get(function(data){
+			//console.log(data.USD.dolartoday);
+	//		$scope.dolartoday = data.USD.dolartoday;
+	//	});
+
+	  $scope.dolartoday = localStorage.getItem('dolartoday');
 
 	  $scope.openSale = function (sale) {
 		//$log.info(size);
@@ -134,7 +140,9 @@ function ($scope, $filter, $http, $modal, Page, $location, focus, sesionesContro
 	        	$scope.total_facturas = window.Math.round(total_facturas);
 	        	$scope.total_facturas_credito = window.Math.round(credito); 	        		        		        	
 	          	$scope.total = window.Math.round(total_cobrado);
-	        });
+	        }).error(function(){
+			Flash.create('danger', Variables.ApiErrorMessage);
+			});
 
 	      	
 	     }; 
@@ -168,7 +176,9 @@ function ($scope, $filter, $http, $modal, Page, $location, focus, sesionesContro
 		        	$scope.total_facturas = window.Math.round(total_facturas);
 		        	$scope.total_facturas_credito = window.Math.round(credito); 	        		        		        	
 		          	$scope.total = window.Math.round(total_cobrado);
-		        });
+		        }).error(function(){
+					Flash.create('danger', Variables.ApiErrorMessage);
+				});
 
 		      	
 		     }; 
@@ -254,8 +264,9 @@ app.controller('ModalInstanceCtrl', ['authUsers', '$scope', '$modalInstance', 'i
 	    	$timeout(function() { $modalInstance.dismiss();}, '2000');
 	    	 //$modalInstance.dismiss();
 	    	//console.log(data);
-	    	
-	    });
+	    }).error(function(){
+			Flash.create('danger', Variables.ApiErrorMessage);
+		});
 	};
 	
 	
@@ -289,8 +300,9 @@ app.controller('ModalInstanceCtrl', ['authUsers', '$scope', '$modalInstance', 'i
 	    	$timeout(function() { $modalInstance.dismiss();}, '2000');
 	    	 //$modalInstance.dismiss();
 	    	//console.log(data);
-	    	
-	    });
+	    }).error(function(){
+			//Flash.create('danger', Variables.ApiErrorMessage);
+		});
 		}
 		/*
 		}else{
@@ -305,7 +317,9 @@ app.controller('ModalInstanceCtrl', ['authUsers', '$scope', '$modalInstance', 'i
 	    	 //$modalInstance.dismiss();
 	    	//console.log(data);
 	    	
-	    });
+	    }).error(function(){
+			Flash.create('danger', Variables.ApiErrorMessage);
+		});
 		
 	
 		
@@ -324,8 +338,9 @@ app.controller('ModalInstanceCtrl', ['authUsers', '$scope', '$modalInstance', 'i
     	//$scope.devolucion_web_detalle = data.devolucion;
     	
     	//console.log(data);
-    	
-    });
+    }).error(function(){
+			Flash.create('danger', Variables.ApiErrorMessage);
+		});
 	
 	
 	$http({
@@ -354,7 +369,9 @@ app.controller('ModalInstanceCtrl', ['authUsers', '$scope', '$modalInstance', 'i
     	
     	$scope.devolucion_detail = data;
     	
-    });
+    }).error(function(){
+			//Flash.create('danger', Variables.ApiErrorMessage);
+		});
 		
 		
     $scope.ok = function () {

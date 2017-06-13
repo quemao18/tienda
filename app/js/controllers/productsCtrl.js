@@ -1,16 +1,23 @@
 /* global app */
 
 app.controller('searchCtrl',
-        ['$routeParams', '$scope', 'mainInfo', '$http', '$timeout', 'Page', 'getTopic', '$location', 'ngCart', 'authUsers', '$modal', '$rootScope', 'focus', 
-    function ($routeParams, $scope, mainInfo, $http, $timeout, Page, getTopic, $location, ngCart, authUsers, $modal, $rootScope, focus) {
+        ['$routeParams', '$scope', 'mainInfo', 'Flash', 'dolartoday', '$http', '$timeout', 'Page', 'getTopic', '$location', 'ngCart', 'authUsers', '$modal', '$rootScope', 'focus', 
+    function ($routeParams, $scope, mainInfo, Flash, dolartoday, $http, $timeout, Page, getTopic, $location, ngCart, authUsers, $modal, $rootScope, focus) {
     
     mainInfo.get(function(data){
     $scope.Variables = data.variables[0];   
     Variables = data.variables[0];   
-    
+
     //$scope.appName = data.variables[0].AppName;
     //console.log(Variables);
   });
+
+     
+   // dolartoday.get(function(data){
+    //console.log(data.USD.dolartoday);
+	$scope.dolartoday = localStorage.getItem('dolartoday');//data.USD.dolartoday;
+  //});
+
     $scope.Page = Page;	
     focus('topic');
     $scope.entryGroup = 12; 
@@ -41,10 +48,15 @@ app.controller('searchCtrl',
 			
 	    }).success(function(data){
 	    	return data;
-	    });
+	    }).error(function(){
+			Flash.create('danger', Variables.ApiErrorMessage);
+		});
     };
-        	      
+
+   //https://s3.amazonaws.com/dolartoday/data.json     	      
     
+
+
     $scope.isExist = function(exist){
         return function(product) {
              //console.log(exist);
@@ -82,19 +94,34 @@ app.controller('searchCtrl',
     		topic = topic.toUpperCase().replace('*', 'X');
     	
     	$location.search('topic='+topic);
-    	getTopic.setTopic(topic);    	
+    	getTopic.setTopic(topic);    
+		//this.searchFnc('', topic);	
     	//$location.url($location.path());
     };
       	
     $scope.searchFnc = function(group, topic) {
-    	 
-    	if($routeParams.topic!=='') topic=$routeParams.topic;
-     	
-    	if(topic === undefined) topic = '';
+	/*		
+     $http({
+          method:'GET', 
+	        url: Variables.ApiUrl + '/products/test/',
+	    }).success(function(data){
+			Flash.create('success', data.message);
+	    }).error(function(){
+			Flash.create('danger', Variables.ApiErrorMessage);
+		});
+     */
+		
+		if($routeParams.topic!=='') {
+			topic=$routeParams.topic;
+				if(topic === undefined) topic = '';
+			topic = topic.toUpperCase().replace('*', 'X');
+		}else{
+    		$location.search('topic='+topic);
+    		if(topic === undefined) topic = '';
+    		if(topic!==null || topic!=='')
+    			topic = topic.toUpperCase().replace('*', 'X');
     	
-    	if(topic!==null || topic!=='')
-    		topic = topic.toUpperCase().replace('*', 'X');
-    	
+		 }
     	getTopic.setTopic(topic);
     	focus('topic');
     	//$location.search('topic='+topic);
@@ -128,8 +155,10 @@ app.controller('searchCtrl',
                 	//$location.path('products_list');                	
                 } */
    		
-            });
-    		   		   	
+            }).error(function(){
+			Flash.create('danger', Variables.ApiErrorMessage);
+		});
+    		   		
       };    
      
       
@@ -171,7 +200,9 @@ app.controller('searchCtrl',
                 	focus('topic');        	    	        	      	
                 }         
              
-          });
+          }).error(function(){
+			Flash.create('danger', Variables.ApiErrorMessage);
+		});
     	  
 		 };
 
@@ -192,7 +223,7 @@ app.controller('searchCtrl',
 			//$log.info(size);
 			  var modalInstance = $modal.open({
 		            //templateUrl: 'myModalProduct.html',
-                            templateUrl: 'views/products/product_edit.html',
+                    templateUrl: 'views/products/product_edit.html',
 		            controller: 'productEditCtrl',
 		            //windowClass: 'app-modal-window',
 		            //backdrop: 'static',
@@ -294,7 +325,9 @@ app.controller('productEditCtrl', ['$scope', '$modalInstance', 'item', '$http', 
      	    	 //$modalInstance.dismiss();
      	    	//console.log(item.group);
              	
-             });
+             }).error(function(){
+			Flash.create('danger', Variables.ApiErrorMessage);
+		});
         };
         
         $http({
@@ -306,6 +339,8 @@ app.controller('productEditCtrl', ['$scope', '$modalInstance', 'item', '$http', 
         	//Flash.create('warning', data.venta_facturas, 0)
         	$scope.product = data;
 
-        });
+        }).error(function(){
+			Flash.create('danger', Variables.ApiErrorMessage);
+		});
 
 }]);
