@@ -528,6 +528,7 @@ angular.module('ngCart.directives', ['ngCart.fulfilment'])
                                 error: data
                             });
                         });
+                        return fulfilmentProvider;
                 };
             }]),
             scope: {

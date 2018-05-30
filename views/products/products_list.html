@@ -87,14 +87,18 @@
 			{{product.precio_dolar*dolartoday | roundPrice | currency:'Bs. ' }}
     		<span  title="Precio dolarizado con DolarToday a {{product.dolar_today | currency:'Bs. '}} al {{ product.fechamodifi | date:'dd/MM/yyyy' }}" style="color: black; font-size: 14px;">{{product.precio_dolar | currency:'$'}}</span>
 			</h4>			
+			<h6 style="color:grey" ng-show="(isLocal || isAdmin) && product.precio_dolar>0"  >
+				<span class="glyphicon glyphicon-btc"></span> {{product.precio_dolar/(btc) | number:8}}
+			</h6>	
     		<h3><strong ng-show="!isAdmin && !isLocal">
 					<span ng-show="product.existencia>0"  class="text-success">Disponible</span>
 					<span ng-show="product.existencia<=0" class="text-danger">Agotado</span>					
 				</strong>
 			<span ng-show="!isAdmin && !isLocal" title="Agregalo y solicita tu presupuesto para confirmar existencia." class="glyphicon glyphicon-warning-sign"></span>	 
 			</h3>
+
     		<br>    		
-    		 	              	   
+    		 	           	   
          </div>
          
        

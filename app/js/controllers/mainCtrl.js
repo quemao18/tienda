@@ -1,8 +1,8 @@
 
 /* global app */
 
-app.controller('mainCtrl', [ '$scope', '$http', 'focus', 'Flash', 'sesionesControl', 'authUsers', 'mainInfo', 'dolartoday', '$location', 
-    function ( $scope, $http, focus, Flash, sesionesControl, authUsers, mainInfo, dolartoday, $location) {   
+app.controller('mainCtrl', [ '$scope', '$http', 'focus', 'Flash', 'sesionesControl', 'authUsers', 'mainInfo', 'dolartoday', 'btc', '$location', 
+    function ( $scope, $http, focus, Flash, sesionesControl, authUsers, mainInfo, dolartoday, btc, $location) {   
     //$scope.Variables = [];
     
     $scope.date = new Date();
@@ -17,7 +17,18 @@ app.controller('mainCtrl', [ '$scope', '$http', 'focus', 'Flash', 'sesionesContr
       $scope.dolartoday = 0;
       if(authUsers.isLocal())
 			Flash.create('danger', 'No hay respuesta del API de Dolar Today');
-		});
+    });
+    
+    btc.success(function(data){
+      console.log(data);
+      localStorage.setItem('btc', data[0].price_usd);
+      $scope.btc = data[0].price_usd;
+    }).error(function(){
+        localStorage.setItem('btc', 0);
+        $scope.btc = 0;
+        if(authUsers.isLocal())
+        Flash.create('danger', 'No hay respuesta del API de Coin Market');
+      });
   
     
     setInterval(function () {
@@ -36,15 +47,33 @@ app.controller('mainCtrl', [ '$scope', '$http', 'focus', 'Flash', 'sesionesContr
       if(authUsers.isLocal())
 			Flash.create('danger', 'No hay respuesta del API de Dolar Today');
 		});
-    }, 3600000);
+    }, 1800000);
+
+    setInterval(function () {
+      btc.success(function(data){
+        //console.log(Math.floor(Math.random() * 6) + 3680)
+        $scope.btc = data[0].price_usd;
+        localStorage.setItem('btc', data[0].price_usd);
+        }).error(function(){
+        localStorage.setItem('btc', 0);
+        $scope.btc = 0;
+        if(authUsers.isLocal())
+        Flash.create('danger', 'No hay respuesta del API de Coin Market');
+      });
+      }, 1800000);
   
     mainInfo.get(function(data){
     $scope.Variables = data.variables[0];   
     Variables = data.variables[0]; 
     var message = 'Email <a href ="mailto:' + Variables.Email + '?Subject=Información" target = "_blank">'+ Variables.Email +'</a>';
+    //if(!authUsers.isLocal())
+    //    Flash.create('warning', message, 0, {class: 'custom-class', id: '1'}, true);
+    var message = 'Tienda carrada. Abrimos en Enero';
     if(!authUsers.isLocal())
-        Flash.create('warning', message, 0, {class: 'custom-class', id: '1'}, true);
+        Flash.create('warning', message, 0, {class: 'custom-class', id: '1'}, true);    
   });
+
+
     $scope.user = { username : "", password : "" },
     authUsers.flash = "";
     

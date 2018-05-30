@@ -95,6 +95,11 @@ app.factory('dolartoday', function($resource, $http) {
     return $http.get('https://s3.amazonaws.com/dolartoday/data.json');
 });
 
+app.factory('btc', function($resource, $http) { 
+    //return $resource('https://s3.amazonaws.com/dolartoday/data.json');
+       return $http.get('https://api.coinmarketcap.com/v1/ticker/bitcoin/');
+   });
+
 app.factory('Page', function() {
 	   var title = 'default';	  
 	   return {
