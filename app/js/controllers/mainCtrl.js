@@ -10,8 +10,9 @@ app.controller('mainCtrl', [ '$scope', '$http', 'focus', 'Flash', 'sesionesContr
     $scope.dolarUp = false;
     //localStorage.setItem('dolartoday', '100');
     dolartoday.success(function(data){
-    localStorage.setItem('dolartoday', data.USD.dolartoday);
-    $scope.dolartoday = data.USD.dolartoday;
+    console.log(data);
+    localStorage.setItem('dolartoday', data.USD.dolartoday*Variables.DolarAumento);
+    $scope.dolartoday = data.USD.dolartoday*Variables.DolarAumento;
   }).error(function(){
       localStorage.setItem('dolartoday', 0);
       $scope.dolartoday = 0;
@@ -39,8 +40,8 @@ app.controller('mainCtrl', [ '$scope', '$http', 'focus', 'Flash', 'sesionesContr
           else
         $scope.dolarUp = false;
 	    
-      $scope.dolartoday = data.USD.dolartoday;
-      localStorage.setItem('dolartoday', data.USD.dolartoday);
+        localStorage.setItem('dolartoday', data.USD.dolartoday*Variables.DolarAumento);
+        $scope.dolartoday = data.USD.dolartoday*Variables.DolarAumento;
       }).error(function(){
       localStorage.setItem('dolartoday', 0);
       $scope.dolartoday = 0;

@@ -15,8 +15,9 @@
             "META_AUTHOR": "RodaSalias",
             "Version": "130117",
             "DolarToday": true,
+            "DolarAumento": "1.235",
             "BTC": true,
-            "Iva1": "12",
+            "Iva1": "16",
             "Iva2": "10",
             "MontoMinimoIva2" : 178571.42857142855 
         }

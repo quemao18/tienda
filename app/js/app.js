@@ -92,7 +92,8 @@ app.factory('mainInfo', function($resource) {
 
 app.factory('dolartoday', function($resource, $http) { 
  //return $resource('https://s3.amazonaws.com/dolartoday/data.json');
-    return $http.get('https://s3.amazonaws.com/dolartoday/data.json');
+    //return $http.get('https://s3.amazonaws.com/dolartoday/data.json');
+    return $http.get('https://jsonp.afeld.me/?callback=&url=https%3A%2F%2Fs3.amazonaws.com%2Fdolartoday%2Fdata.json');
 });
 
 app.factory('btc', function($resource, $http) { 
